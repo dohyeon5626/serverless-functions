@@ -1,5 +1,5 @@
 org: dohyeon5626
-app: licorice-functions
+app: github-html-preview
 service: github-html-preview
 
 provider:

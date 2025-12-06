@@ -1,5 +1,5 @@
 org: dohyeon5626
-app: licorice-functions
+app: monitoring-system
 service: monitoring-system
 
 provider:
@@ -7,7 +7,7 @@ provider:
   runtime: nodejs20.x
 
 functions:
-  rateHandler:
+  alimHandler:
     handler: handler.run
     events:
       - schedule: cron(10 0 * * ? *)
