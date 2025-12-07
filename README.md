@@ -1,21 +1,26 @@
 # licorice functions
 ![GitHub License](https://img.shields.io/github/license/dohyeon5626/licorice-api-collection?style=flat&color=green)
 
-각종 개인 프로젝트을 위한 서버리스 프로젝트 *(약방에 감초)*  
-현재 AWS API Gateway, EventBridge, Lambda, CloudWatch 등의 서비스를 사용하여 운영되며, 큰 서비스는 따로 서버 어플리케이션을 구축하여 사용하고, 그 외 확장 프로그램, 플러그인, 간단한 웹페이지 등 규모가 크지 않은 프로젝트에서 가벼운 서버 기능이 필요한 경우에 이용
+각종 개인 프로젝트을 위한 서버리스 함수 모노레포
 
 **github-html-preview**
 ```
-1. 깃허브 content를 header없이 url로 가져오기 위한 proxy api
+1. 깃허브 Content를 Header없이 Url로 가져오기 위한 Proxy Api
 - GET /github-html-preview/content/{token}/{proxy+}
 
-2. 깃허브 content proxy api 사용시 github token을 숨기기 위한 jwt 발급 api
+2. 깃허브 Content Proxy Api 사용시 Github Token을 숨기기 위한 Jwe 발급 Api
 - POST /github-html-preview/token
+
+3. 깃허브 Oauth를 위한 로그인 페이지 리다이렉트 Api
+- GET /github-oauth/authorize
+
+4. 깃허브 Oauth를 위한 토큰 정보 Api
+- POST /github-oauth/token
 ```
 
 **monitoring-system**
 ```
-1. Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension의 현재 상태를 알림 보내주는 Batch
+1. Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension의 현재 상태를 알림 보내주는 batch
    (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
 - cron(10 0 * * ? *) // 매일 KST 오전 9시 10분
 ```
