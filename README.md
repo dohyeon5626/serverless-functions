@@ -1,7 +1,7 @@
-# licorice functions
-![GitHub License](https://img.shields.io/github/license/dohyeon5626/licorice-api-collection?style=flat&color=green)
+# serverless functions
+![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-function?style=flat&color=green)
 
-각종 개인 프로젝트을 위한 서버리스 함수 모노레포
+각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포
 
 **github-html-preview**
 ```
