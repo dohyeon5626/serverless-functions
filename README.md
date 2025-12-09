@@ -1,5 +1,5 @@
 # serverless functions
-![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-function?style=flat&color=green)
+![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green)
 
 각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포
 
