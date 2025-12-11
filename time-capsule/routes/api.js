@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import multer from 'multer';
 import { Router } from "express";
-import { createSubscription } from '../service/service.js'
+import { createSubscription, getSubscriptionById } from '../service/service.js'
 import AppError from './exception.js';
 
 const router = Router();
@@ -36,6 +36,12 @@ router.post("/subscription",
     return res.status(201).json({ 
         id: await createSubscription(capsuleData)
     });
+  }));
+
+router.get("/subscription/:id", 
+  asyncHandler(async (req, res) => {
+    const { id } = req.params; 
+    return res.status(200).json(await getSubscriptionById(id));
   }));
 
 

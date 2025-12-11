@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-export async function saveSubscription(capsuleData) {
+export const saveSubscription = async (capsuleData) => {
     const id = nanoid();
     const params = {
         TableName: "time_capsule_subscription",
@@ -29,4 +29,12 @@ export async function saveSubscription(capsuleData) {
         console.error("Error saving capsule:", error);
         throw new Error("데이터 저장 실패");
     }
+}
+
+export const findSubscriptionById = async (subscriptionId) => {
+    const result = await docClient.send(new GetCommand({
+        TableName: "time_capsule_subscription",
+        Key: { id: subscriptionId },
+    }));
+    return result.Item;
 }

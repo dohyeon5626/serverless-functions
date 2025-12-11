@@ -1,6 +1,13 @@
-import { saveSubscription } from "../repository/repository.js";
+import { saveSubscription, findSubscriptionById } from "../repository/repository.js";
 
-export async function createSubscription(capsuleData) {
+export const createSubscription = async (capsuleData) => {
     // TODO 후에 파일 업로드도 진행 예정
     return await saveSubscription(capsuleData);
+}
+
+export const getSubscriptionById = async (subscriptionId) => {
+    const subscription = await findSubscriptionById(subscriptionId);
+    if (!subscription) throw new AppError(404, '해당 ID의 타임캡슐을 찾을 수 없습니다.');
+
+    return subscription;
 }
