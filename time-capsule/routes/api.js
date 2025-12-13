@@ -13,20 +13,20 @@ router.post("/subscription",
     const { 
         recipients, 
         senderName, 
-        senderPhone, 
+        senderEmail, 
         message, 
         openDate, 
         usePasswordKey
     } = req.body;
     
-    if (!recipients || !senderName || !senderPhone || !message || !openDate || !usePasswordKey) {
+    if (!recipients || !senderName || !senderEmail || !message || !openDate || !usePasswordKey || !Date.parse(openDate)) {
       throw new AppError(404, 'Bad Request');
     }
     
     const capsuleData = {
         recipients: JSON.parse(recipients), 
         senderName,
-        senderPhone,
+        senderEmail,
         message,
         openDate,
         usePasswordKey: usePasswordKey === 'true',

@@ -7,7 +7,21 @@ export const createSubscription = async (capsuleData) => {
 
 export const getSubscriptionById = async (subscriptionId) => {
     const subscription = await findSubscriptionById(subscriptionId);
-    if (!subscription) throw new AppError(404, '해당 ID의 타임캡슐을 찾을 수 없습니다.');
+    if (!subscription) throw new AppError(404, 'Not Found Subscription');
 
-    return subscription;
+    const {
+      openDate, 
+      senderName, 
+      createdAt, 
+      message, 
+      usePasswordKey
+    } = subscription
+    
+    return {
+        openDate, 
+        senderName, 
+        createdAt, 
+        message, 
+        usePasswordKey
+    };
 }
