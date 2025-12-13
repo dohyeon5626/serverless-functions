@@ -16,7 +16,8 @@ router.post("/subscription",
         senderEmail, 
         message, 
         openDate, 
-        usePasswordKey
+        usePasswordKey,
+        originalHeader
     } = req.body;
     
     if (!recipients || !senderName || !senderEmail || !message || !openDate || !usePasswordKey) {
@@ -33,6 +34,7 @@ router.post("/subscription",
         message,
         openDate : Number(openDate),
         usePasswordKey: usePasswordKey === 'true',
+        originalHeader
     };
 
     return res.status(201).json({ 

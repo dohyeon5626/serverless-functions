@@ -22,7 +22,8 @@ export const getSubscriptionById = async (subscriptionId) => {
       createdAt, 
       message, 
       usePasswordKey,
-      imgUrl
+      imgUrl,
+      originalHeader
     } = subscription
     
     return {
@@ -31,7 +32,8 @@ export const getSubscriptionById = async (subscriptionId) => {
         createdAt, 
         message, 
         usePasswordKey,
-        imgUrl
+        imgUrl,
+        originalHeader
     };
 }
 

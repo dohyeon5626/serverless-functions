@@ -25,6 +25,7 @@ export const saveSubscription = async (id, capsuleData, imgUrl) => {
             createdAt: new Date().getTime(),
             deleteDateTtl: deleteDateTtl,
             openStatus: "WAIT",
+            originalHeader: capsuleData.originalHeader,
             imgUrl: imgUrl
         },
         ConditionExpression: 'attribute_not_exists(id)',
