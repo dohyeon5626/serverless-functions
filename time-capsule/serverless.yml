@@ -13,11 +13,11 @@ provider:
             - "dynamodb:PutItem"
             - "dynamodb:GetItem"
             - "dynamodb:Query"
-            - "dynamodb:Scan"
+            - "s3:PutObject"
           Resource: 
-            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription"
-            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_reservation"
-            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription/index/OpenStatusIndex"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/index/OpenStatusIndex"
+            - "arn:aws:s3:::${env:BUCKET}/*"
 
 functions:
   api:

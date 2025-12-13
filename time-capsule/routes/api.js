@@ -22,6 +22,9 @@ router.post("/subscription",
     if (!recipients || !senderName || !senderEmail || !message || !openDate || !usePasswordKey) {
       throw new AppError(404, 'Bad Request');
     }
+    if (openDate <= new Date().getTime()) {
+      throw new AppError(404, 'Bad Request');
+    }
     
     const capsuleData = {
         recipients: JSON.parse(recipients), 
@@ -30,11 +33,10 @@ router.post("/subscription",
         message,
         openDate : Number(openDate),
         usePasswordKey: usePasswordKey === 'true',
-        imageFile: req.file || null
     };
 
     return res.status(201).json({ 
-        id: await createSubscription(capsuleData)
+        id: await createSubscription(capsuleData, req.file || null)
     });
   }));
 

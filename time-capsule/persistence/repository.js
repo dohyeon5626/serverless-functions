@@ -1,19 +1,19 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
-import { nanoid } from 'nanoid';
+
+const TABLE = process.env.TABLE;
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-export const saveSubscription = async (capsuleData) => {
-    const id = nanoid();
+export const saveSubscription = async (id, capsuleData, imgUrl) => {
     const openDateObj = new Date(capsuleData.openDate);
     const oneYearLater = new Date(openDateObj);
     oneYearLater.setFullYear(openDateObj.getFullYear() + 10);
     const deleteDateTtl = Math.floor(oneYearLater.getTime() / 1000);
 
     const subscriptionParams = {
-        TableName: "time_capsule_subscription",
+        TableName: TABLE,
         Item: {
             id: id,
             openDate: new Date(capsuleData.openDate).getTime(),
@@ -24,7 +24,8 @@ export const saveSubscription = async (capsuleData) => {
             usePasswordKey: capsuleData.usePasswordKey,
             createdAt: new Date().getTime(),
             deleteDateTtl: deleteDateTtl,
-            openStatus: "WAIT"
+            openStatus: "WAIT",
+            imgUrl: imgUrl
         },
         ConditionExpression: 'attribute_not_exists(id)',
     };
@@ -40,7 +41,7 @@ export const saveSubscription = async (capsuleData) => {
 
 export const findSubscriptionById = async (subscriptionId) => {
     const result = await docClient.send(new GetCommand({
-        TableName: "time_capsule_subscription",
+        TableName: TABLE,
         Key: { id: subscriptionId },
     }));
     return result.Item;
@@ -48,7 +49,7 @@ export const findSubscriptionById = async (subscriptionId) => {
 
 export const getSubscriptionCounts = async () => {
     const openParams = {
-        TableName: "time_capsule_subscription",
+        TableName: TABLE,
         IndexName: "OpenStatusIndex",
         KeyConditionExpression: "openStatus = :open",
         ExpressionAttributeValues: {
@@ -58,7 +59,7 @@ export const getSubscriptionCounts = async () => {
     };
 
     const waitParams = {
-        TableName: "time_capsule_subscription",
+        TableName: TABLE,
         IndexName: "OpenStatusIndex",
         KeyConditionExpression: "openStatus = :wait",
         ExpressionAttributeValues: {

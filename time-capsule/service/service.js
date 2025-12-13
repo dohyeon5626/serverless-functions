@@ -1,9 +1,15 @@
-import { saveSubscription, findSubscriptionById, getSubscriptionCounts } from "../repository/repository.js";
+import { saveSubscription, findSubscriptionById, getSubscriptionCounts } from "../persistence/repository.js";
+import { uploadImageToS3 } from "../persistence/storage.js"
+import { nanoid } from 'nanoid';
 import AppError from '../routes/exception.js';
 
-export const createSubscription = async (capsuleData) => {
-    // TODO 후에 파일 업로드도 진행 예정
-    return await saveSubscription(capsuleData);
+export const createSubscription = async (capsuleData, imageFile) => {
+    const id = nanoid();
+    var imgUrl = null;
+    if (imageFile) {
+        imgUrl = await uploadImageToS3(imageFile.buffer, 'time-capusle-' + id + '.' + imageFile.mimetype.split('/')[1], imageFile.mimetype)
+    }
+    return await saveSubscription(id, capsuleData, imgUrl);
 }
 
 export const getSubscriptionById = async (subscriptionId) => {
@@ -15,7 +21,8 @@ export const getSubscriptionById = async (subscriptionId) => {
       senderName, 
       createdAt, 
       message, 
-      usePasswordKey
+      usePasswordKey,
+      imgUrl
     } = subscription
     
     return {
@@ -23,7 +30,8 @@ export const getSubscriptionById = async (subscriptionId) => {
         senderName, 
         createdAt, 
         message, 
-        usePasswordKey
+        usePasswordKey,
+        imgUrl
     };
 }
 
