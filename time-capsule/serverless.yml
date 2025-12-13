@@ -14,7 +14,6 @@ provider:
             - "dynamodb:GetItem"
             - "dynamodb:Query"
             - "dynamodb:Scan"
-            - "dynamodb:TransactWriteItems"
           Resource: 
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription"
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_reservation"

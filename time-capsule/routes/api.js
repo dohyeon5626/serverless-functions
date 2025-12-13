@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import multer from 'multer';
 import { Router } from "express";
-import { createSubscription, getSubscriptionById } from '../service/service.js'
+import { createSubscription, getSubscriptionById, getSubscriptionStatus } from '../service/service.js'
 import AppError from './exception.js';
 
 const router = Router();
@@ -19,7 +19,7 @@ router.post("/subscription",
         usePasswordKey
     } = req.body;
     
-    if (!recipients || !senderName || !senderEmail || !message || !openDate || !usePasswordKey || !Date.parse(openDate)) {
+    if (!recipients || !senderName || !senderEmail || !message || !openDate || !usePasswordKey) {
       throw new AppError(404, 'Bad Request');
     }
     
@@ -28,7 +28,7 @@ router.post("/subscription",
         senderName,
         senderEmail,
         message,
-        openDate,
+        openDate : Number(openDate),
         usePasswordKey: usePasswordKey === 'true',
         imageFile: req.file || null
     };
@@ -42,6 +42,11 @@ router.get("/subscription/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params; 
     return res.status(200).json(await getSubscriptionById(id));
+  }));
+
+router.get("/subscription-status", 
+  asyncHandler(async (req, res) => {
+    return res.status(200).json(await getSubscriptionStatus());
   }));
 
 

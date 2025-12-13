@@ -1,4 +1,5 @@
-import { saveSubscription, findSubscriptionById } from "../repository/repository.js";
+import { saveSubscription, findSubscriptionById, getSubscriptionCounts } from "../repository/repository.js";
+import AppError from '../routes/exception.js';
 
 export const createSubscription = async (capsuleData) => {
     // TODO 후에 파일 업로드도 진행 예정
@@ -24,4 +25,8 @@ export const getSubscriptionById = async (subscriptionId) => {
         message, 
         usePasswordKey
     };
+}
+
+export const getSubscriptionStatus = async () => {
+    return await getSubscriptionCounts();
 }
