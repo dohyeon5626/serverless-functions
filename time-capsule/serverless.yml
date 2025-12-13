@@ -17,7 +17,7 @@ provider:
           Resource: 
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription"
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_reservation"
-            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription/index/OpenDateIndex"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/time_capsule_subscription/index/OpenStatusIndex"
 
 functions:
   api:

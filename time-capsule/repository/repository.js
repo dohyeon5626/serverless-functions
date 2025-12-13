@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, ScanCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, QueryCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { nanoid } from 'nanoid';
 
 const client = new DynamoDBClient({});
@@ -49,7 +49,8 @@ export const findSubscriptionById = async (subscriptionId) => {
 export const getSubscriptionCounts = async () => {
     const openParams = {
         TableName: "time_capsule_subscription",
-        FilterExpression: "openStatus = :open",
+        IndexName: "OpenStatusIndex",
+        KeyConditionExpression: "openStatus = :open",
         ExpressionAttributeValues: {
             ":open": "OPEN",
         },
@@ -58,7 +59,8 @@ export const getSubscriptionCounts = async () => {
 
     const waitParams = {
         TableName: "time_capsule_subscription",
-        FilterExpression: "openStatus = :wait",
+        IndexName: "OpenStatusIndex",
+        KeyConditionExpression: "openStatus = :wait",
         ExpressionAttributeValues: {
             ":wait": "WAIT",
         },
@@ -66,8 +68,8 @@ export const getSubscriptionCounts = async () => {
     };
 
     try {
-        const openResult = await docClient.send(new ScanCommand(openParams));
-        const waitResult = await docClient.send(new ScanCommand(waitParams));
+        const openResult = await docClient.send(new QueryCommand(openParams));
+        const waitResult = await docClient.send(new QueryCommand(waitParams));
 
         const openCount = openResult.Count;
         const waitCount = waitResult.Count;
