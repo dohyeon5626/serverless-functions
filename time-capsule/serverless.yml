@@ -19,11 +19,14 @@ provider:
             - "dynamodb:GetRecords"
             - "dynamodb:GetShardIterator"
             - "dynamodb:ListStreams"
+            - "ses:SendEmail"
+            - "ses:SendRawEmail"
           Resource: 
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/index/OpenStatusIndex"
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/stream/*"
             - "arn:aws:s3:::${env:BUCKET}/*"
+            - "arn:aws:ses:${aws:region}:${aws:accountId}:identity/${env:SENDER_EMAIL}"
 
 functions:
   api:
