@@ -35,7 +35,7 @@ export const saveSubscription = async (id, capsuleData, imgUrl) => {
         await docClient.send(new PutCommand(subscriptionParams));
         return id;
     } catch (error) {
-        console.error("Error saving capsule:", error);
+        console.log("Error saving capsule:", error);
         throw new Error("데이터 저장 실패");
     }
 }
@@ -81,7 +81,7 @@ export const getSubscriptionCounts = async () => {
             waitingCount: waitCount,
         };
     } catch (error) {
-        console.error("Error querying subscription counts:", error);
+        console.log("Error querying subscription counts:", error);
         throw new Error("구독 개수 조회 실패");
     }
 }

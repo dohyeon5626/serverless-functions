@@ -14,9 +14,15 @@ provider:
             - "dynamodb:GetItem"
             - "dynamodb:Query"
             - "s3:PutObject"
+            - "s3:DeleteObject"
+            - "dynamodb:DescribeStream"
+            - "dynamodb:GetRecords"
+            - "dynamodb:GetShardIterator"
+            - "dynamodb:ListStreams"
           Resource: 
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/index/OpenStatusIndex"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/stream/*"
             - "arn:aws:s3:::${env:BUCKET}/*"
 
 functions:
@@ -24,6 +30,14 @@ functions:
     handler: app.application
     events:
       - httpApi: "*"
+  event:
+    handler: event.run
+    events:
+      - stream:
+          type: dynamodb
+          arn: "${env:STREAM_ARN}"
+          batchSize: 100
+          startingPosition: LATEST
 
 plugins:
   - serverless-offline
