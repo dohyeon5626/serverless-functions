@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, QueryCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, QueryCommand, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 const TABLE = process.env.TABLE;
 
@@ -83,5 +83,41 @@ export const getSubscriptionCounts = async () => {
     } catch (error) {
         console.log("Error querying subscription counts:", error);
         throw new Error("구독 개수 조회 실패");
+    }
+}
+
+export const findAllSubscriptionByOpenDate = async (openDateTime) => {
+    const params = {
+        TableName: TABLE,
+        IndexName: "OpenDateIndex",
+        KeyConditionExpression: "openDate = :sendDate",
+        ExpressionAttributeValues: {
+            ":sendDate" : openDateTime,
+        }
+    };
+
+    try {
+        return (await docClient.send(new QueryCommand(params))).Items;
+    } catch (error) {
+        console.log("Error querying subscription counts:", error);
+        throw new Error("발송할 구독 목록 조회 실패");
+    }
+}
+
+export const updateCapsuleStatusForOpen = async (id) => {
+    const params = {
+        TableName: TABLE,
+        Key: { id: id },
+        UpdateExpression: "SET openStatus = :status",
+        ExpressionAttributeValues: {
+            ":status": "OPEN",
+        },
+    };
+
+    try {
+        await docClient.send(new UpdateCommand(params));
+    } catch (error) {
+        console.error(`Error Failed to update status for ${id}:`, error);
+        throw new Error("상태 업데이트 실패");
     }
 }

@@ -1,6 +1,7 @@
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { deleteImageFromS3 } from './persistence/storage.js';
 import { sendCreateTimeCapsuleEmail } from './plugin/email.js';
+import { createSchedule } from './plugin/reservation.js';
 
 export const run = async (event) => {
     const promises = event.Records.map(async (record) => {
@@ -24,9 +25,8 @@ export const run = async (event) => {
                 const newImage = unmarshall(record.dynamodb.NewImage);
                 console.log('생성 대상:', newImage);
 
-                if (newImage.senderEmail) {
-                    await sendCreateTimeCapsuleEmail(newImage.senderEmail, newImage);
-                }
+                await createSchedule(new Date(newImage.openDate));
+                await sendCreateTimeCapsuleEmail(newImage);
             }
         } catch (error) {
             console.log(`Record ID ${record.eventID} 처리 실패:`, error.message);
