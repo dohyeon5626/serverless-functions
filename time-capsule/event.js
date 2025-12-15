@@ -25,7 +25,7 @@ export const run = async (event) => {
                 console.log('생성 대상:', newImage);
 
                 if (newImage.senderEmail) {
-                    await sendCreateTimeCapsuleEmail(newImage.senderEmail, newImage.senderName);
+                    await sendCreateTimeCapsuleEmail(newImage.senderEmail, newImage);
                 }
             }
         } catch (error) {
