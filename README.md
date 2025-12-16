@@ -24,3 +24,21 @@
    (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
 - cron(10 0 * * ? *) // 매일 KST 오전 9시 10분
 ```
+
+**time-capsule**
+```
+1. 타임캡슐 생성 Api
+- POST /subscription
+
+2. 타임캡슐 상세조회 Api
+- GET /subscription/:id
+
+3. 타임캡슐 현황 Api
+- GET /subscription-status
+
+4. 타임캡슐 데이터 관련 작업 (생성 시 이메일 발송 및 예약 / 데이터 삭제 시 s3 객체 삭제)
+- 타임캡슐 dynamodb 테이블 stream
+
+5. 예약된 시간에 이메일 발송 작업
+- 이메일 발송 관련 eventBridge
+```
