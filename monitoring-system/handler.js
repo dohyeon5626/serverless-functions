@@ -7,13 +7,13 @@ const CHANNEL_KEY = process.env.CHANNEL_KEY;
 
 export const run = async () => {
   const browser =
-        // await (await import("puppeteer")).launch() // 로컬에서 실행시
-        await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar'),
-            headless: chromium.headless,
-        });
+        await (await import("puppeteer")).launch() // 로컬에서 실행시
+        // await puppeteer.launch({
+        //     args: chromium.args,
+        //     defaultViewport: chromium.defaultViewport,
+        //     executablePath: await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar'),
+        //     headless: chromium.headless,
+        // });
   const [
     githubHtmlPreviewExtensionUserCount,
     githubHtmlPreviewExtensionAddButtonSelectorExistence,
@@ -71,7 +71,15 @@ const getGithubHtmlPreviewExtensionUserCount = async () => {
 const hasGithubHtmlPreviewExtensionAddButtonSelector = async (browser) => {
   const page = await browser.newPage();
   await page.goto('https://github.com/dohyeon5626/github-html-preview-extension/blob/main/public/popup/popup.html');
-  return await page.evaluate(() => document.querySelectorAll(".prc-ButtonGroup-ButtonGroup-vcMeG:has(div > a)").length === 1);
+  return await page.evaluate(() => {
+    const btnGroup = document.querySelector(".prc-ButtonGroup-ButtonGroup-vFUrY:has(div > a)");
+    if (btnGroup) {
+        for (const aTag of btnGroup.querySelectorAll("div > a")) {
+          if(aTag.getAttribute("data-testid") === "raw-button") return true;
+        }
+    }
+    return false;
+  });
 }
 
 /* Auto Gitkeep Plugin 다운로드 수 */
