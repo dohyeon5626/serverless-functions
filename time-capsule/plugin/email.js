@@ -33,7 +33,7 @@ export const sendCreateTimeCapsuleEmail = async (capsuleData) => {
                             ` : ""
                         }
 
-                        생성하신 타임캡슐 코드는 ${id}입니다.
+                        아래 링크를 통해 생성하신 타임캡슐을 볼 수 있습니다.
                         https://time-capsule.dohyeon5626.com/#/view?id=${id}
                     `,
                     Charset: "UTF-8",
@@ -62,14 +62,6 @@ export const sendCreateTimeCapsuleEmail = async (capsuleData) => {
                                                             암호키 분실하지 않도록 주의해주세요.
                                                         </p>` : ""
                                                     }
-                                                    
-                                                    <p style="margin: 3em 0 0.8em 0; font-size: 1em; color: #94a3b8; text-align: left;">
-                                                        생성하신 타임캡슐 코드는 아래와 같습니다.
-                                                    </p>
-
-                                                    <div style="border:0.1em solid #374151; border-radius: 1em; padding: 1em; text-align:center; background-color: #0f172a; word-break: break-all;">
-                                                        <p style="margin: 0; color: #FAFAF8 margin: 0; font-size: 0.85em; font-weight: 500;">${id}</p>
-                                                    </div>
                                                     
                                                     <p style="margin: 3em 0 0.8em 0; font-size: 1em; color: #94a3b8; text-align: left;">
                                                         아래 버튼을 클릭하여 타임캡슐 페이지로 이동할 수 있습니다.
@@ -131,7 +123,7 @@ export const sendOpenTimeCapsuleEmail = async (capsuleData) => {
                                 ` : ""
                             }
 
-                            타임캡슐 코드는 ${id}입니다.
+                            아래 링크를 통해 생성하신 타임캡슐을 볼 수 있습니다.
                             https://time-capsule.dohyeon5626.com/#/view?id=${id}
                         `,
                         Charset: "UTF-8",
@@ -158,14 +150,6 @@ export const sendOpenTimeCapsuleEmail = async (capsuleData) => {
                                                                 해당 타임캡슐은 암호키가 설정되어 있습니다.<br>
                                                             </p>` : ""
                                                         }
-                                                        
-                                                        <p style="margin: 3em 0 0.8em 0; font-size: 1em; color: #94a3b8; text-align: left;">
-                                                            타임캡슐 코드는 아래와 같습니다.
-                                                        </p>
-
-                                                        <div style="border:0.1em solid #374151; border-radius: 1em; padding: 1em; text-align:center; background-color: #0f172a; word-break: break-all;">
-                                                            <p style="margin: 0; color: #FAFAF8 margin: 0; font-size: 0.85em; font-weight: 500;">${id}</p>
-                                                        </div>
                                                         
                                                         <p style="margin: 3em 0 0.8em 0; font-size: 1em; color: #94a3b8; text-align: left;">
                                                             아래 버튼을 클릭하여 타임캡슐 페이지로 이동할 수 있습니다.
