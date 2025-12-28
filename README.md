@@ -1,7 +1,9 @@
-# serverless functions
-![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green)
+# Serverless Functions<img src="https://github.com/user-attachments/assets/badded73-0631-42e4-8a1a-549309c34c2d" align=left width=100>
 
-각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포
+![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green)
+<br/><br/>
+
+각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포입니다.<br/>
 
 **github-html-preview**
 ```
