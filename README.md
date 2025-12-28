@@ -11,7 +11,7 @@ AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 
 ---
 
 ### github-html-preview
-깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 위해서 운영중입니다.
+깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 운영중입니다.
 > [Github Html Preview Extension](https://github.com/dohyeon5626/github-html-preview-extension), [Github Html Preview Page](https://github.com/dohyeon5626/github-html-preview-page)
 ```
 1. 깃허브 Content를 Header없이 Url로 가져오기 위한 Proxy Api
@@ -28,9 +28,9 @@ AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 
 ```
 
 ### monitoring-system
-각종 개인 프로젝트의 운영 상태를 모니터링하고 알림을 받기 위해 사용하고 있습니다.
-특히 확장 프로그램의 경우, 대상 사이트의 선택자가 변경되면 구조적으로 오류가 발생할 수밖에 없는데, 이러한 문제를 빠르게 감지하고 즉시 수정하기 위한 용도로 활용하고 있습니다.
-이와 함께 현재 사용자 수와 다운로드 수 등의 지표를 파악하는 데에도 사용하고 있습니다.
+각종 개인 프로젝트의 운영 상태를 모니터링하고 알림을 받기 위해 사용하고 있습니다.<br/>
+특히 확장 프로그램의 경우, 대상 사이트의 선택자가 변경되면 구조적으로 오류가 발생할 수밖에 없는데, 이러한 문제를 빠르게 감지하고 즉시 수정하기 위한 용도로 활용하고 있습니다.<br/>
+이와 함께 현재 사용자 수와 다운로드 수 등의 지표를 파악하는 데에도 사용하고 있습니다.<br/>
 > Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension 서비스 정보를 제공합니다.
 ```
 1. 현재 상태를 알림 발송 batch (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
@@ -38,7 +38,7 @@ AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 
 ```
 
 ### time-capsule
-디지털 타임캡슐 프로젝트에서 필요한 타임캡슐 정보 저장 및 조회, 이메일 발송 기능을 위해서 운영 중입니다.
+디지털 타임캡슐 프로젝트에서 필요한 타임캡슐 정보 저장 및 조회, 이메일 발송 기능을 운영 중입니다.
 > [Time Capsule](https://github.com/dohyeon5626/time-capsule)
 ```
 1. 타임캡슐 생성 Api
