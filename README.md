@@ -1,11 +1,18 @@
-# Serverless Functions<img src="https://github.com/user-attachments/assets/badded73-0631-42e4-8a1a-549309c34c2d" align=left width=100>
+# Serverless Functions<img src="https://github.com/user-attachments/assets/38618fea-ad8a-461c-b618-a485f844e35d" align=left width=100>
 
-![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green)
+![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green) ![Api Gateway](https://img.shields.io/badge/api_gateway-running-blue) ![Event Bridge](https://img.shields.io/badge/event_bridge-running-blue)
 <br/><br/>
 
 각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포입니다.<br/>
+확장 프로그램, 단순한 웹 서비스, 배치성 프로그램 등 단순하고 작은 개인 프로젝트들을 위한 서버 기능이 필요할 때 사용합니다.<br/>
+[Serverless 프레임워크](https://www.serverless.com)를 이용하여 개발되었고,<br/>
+AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 서비스를 사용 중입니다.
 
-**github-html-preview**
+---
+
+### github-html-preview
+깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 위해서 운영중입니다.
+> [Github Html Preview Extension](https://github.com/dohyeon5626/github-html-preview-extension), [Github Html Preview Page](https://github.com/dohyeon5626/github-html-preview-page)
 ```
 1. 깃허브 Content를 Header없이 Url로 가져오기 위한 Proxy Api
 - GET /github-html-preview/content/{token}/{proxy+}
@@ -20,14 +27,19 @@
 - POST /github-oauth/token
 ```
 
-**monitoring-system**
+### monitoring-system
+각종 개인 프로젝트의 운영 상태를 모니터링하고 알림을 받기 위해 사용하고 있습니다.
+특히 확장 프로그램의 경우, 대상 사이트의 선택자가 변경되면 구조적으로 오류가 발생할 수밖에 없는데, 이러한 문제를 빠르게 감지하고 즉시 수정하기 위한 용도로 활용하고 있습니다.
+이와 함께 현재 사용자 수와 다운로드 수 등의 지표를 파악하는 데에도 사용하고 있습니다.
+> Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension 서비스 정보를 제공합니다.
 ```
-1. Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension의 현재 상태를 알림 보내주는 batch
-   (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
+1. 현재 상태를 알림 발송 batch (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
 - cron(10 0 * * ? *) // 매일 KST 오전 9시 10분
 ```
 
-**time-capsule**
+### time-capsule
+디지털 타임캡슐 프로젝트에서 필요한 타임캡슐 정보 저장 및 조회, 이메일 발송 기능을 위해서 운영 중입니다.
+> [Time Capsule](https://github.com/dohyeon5626/time-capsule)
 ```
 1. 타임캡슐 생성 Api
 - POST /subscription
