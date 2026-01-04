@@ -4,7 +4,7 @@ service: time-capsule
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
 
   iam:
     role:
