@@ -1,0 +1,21 @@
+org: dohyeon5626
+app: baekjoon-problem-letter
+service: baekjoon-problem-letter
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+
+functions:
+  api:
+    handler: app.application
+    events:
+      - httpApi: "*"
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  exclude:
+    - .env
