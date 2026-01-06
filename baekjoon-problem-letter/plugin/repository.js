@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import AppError from "../routes/exception.js";
 
 const TABLE = process.env.TABLE;
@@ -30,5 +30,26 @@ export const saveSubscription = async (subscriptionData) => {
         }
         console.log("Error saving subscription:", error);
         throw new Error("데이터 저장 실패");
+    }
+}
+
+export const deleteSubscription = async (email) => {
+    const deleteParams = {
+        TableName: process.env.TABLE,
+        Key: {
+            id: email,
+        },
+        ConditionExpression: "attribute_exists(id)",
+    };
+
+    try {
+        await docClient.send(new DeleteCommand(deleteParams));
+    } catch (error) {
+        if (error.name === "ConditionalCheckFailedException") {
+            throw new AppError(404, "Subscription not found");
+        }
+
+        console.error("Error deleting subscription:", error);
+        throw new AppError(500, "Failed to delete subscription");
     }
 }

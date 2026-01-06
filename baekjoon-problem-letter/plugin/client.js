@@ -10,7 +10,11 @@ const base = axios.create({
 
 export const getUserInfo = async (userId) => {
     try {
-        const { data } = await base.get(`/user/show?handle=${userId}`);
+        const { data } = await base.get("/user/show", {
+            params: {
+                handle: userId,
+            },
+        });
         return data;
     } catch (e) {
         if (e.response.status === 429) {
@@ -24,8 +28,16 @@ export const getProblem = async (userId, tier) => {
     try {
         const minTier = tier > 1 ? tier - 1 : 1;
         const maxTier = tier < 30 ? tier + 1 : 30;
+        const query = `(*${minTier}..${maxTier})(-@${userId})`;
 
-        const { data } = await base.get(`/search/problem?query=(*${minTier}..${maxTier})(-@${userId})&page=1&sort=random&direction=asc`);
+        const { data } = await base.get("/search/problem", {
+            params: {
+                query,
+                page: 1,
+                sort: "random",
+                direction: "asc",
+            },
+        });
         return data;
     } catch (e) {
         if (e.response.status === 429) {

@@ -1,5 +1,5 @@
 import { getUserInfo, getProblem } from "../plugin/client.js";
-import { saveSubscription } from "../plugin/repository.js";
+import { deleteSubscription, saveSubscription } from "../plugin/repository.js";
 
 export const createSubscription = async (subscriptionData) => {
     const problemInfo = await getNewProblemInfo(subscriptionData.userId, subscriptionData.problemCount);
@@ -13,6 +13,10 @@ export const createSubscription = async (subscriptionData) => {
         problemSize: problemInfo.problemSize,
         problems: problemInfo.problems
     });
+}
+
+export const cancelSubscription = async (email) => {
+    await deleteSubscription(email);
 }
 
 const getNewProblemInfo = async (userId, problemCount) => {
