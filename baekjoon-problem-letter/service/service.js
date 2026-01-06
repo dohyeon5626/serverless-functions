@@ -1,9 +1,18 @@
 import { getUserInfo, getProblem } from "../plugin/client.js";
+import { saveSubscription } from "../plugin/repository.js";
 
 export const createSubscription = async (subscriptionData) => {
     const problemInfo = await getNewProblemInfo(subscriptionData.userId, subscriptionData.problemCount);
 
-    
+    await saveSubscription({
+        userId: subscriptionData.userId, 
+        email: subscriptionData.email, 
+        sendTime: subscriptionData.sendTime,
+        problemCount: subscriptionData.problemCount,
+        sendDays: subscriptionData.sendDays,
+        problemSize: problemInfo.problemSize,
+        problems: problemInfo.problems
+    });
 }
 
 const getNewProblemInfo = async (userId, problemCount) => {
@@ -35,7 +44,7 @@ const getNewProblemInfo = async (userId, problemCount) => {
     }
 
     return {
-        size: chunkSize,
+        problemSize: chunkSize,
         problems: result
     }
 }

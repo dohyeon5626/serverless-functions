@@ -26,7 +26,7 @@ router.post("/subscription", asyncHandler(async (req, res) => {
     sendDays
   });
 
-  return res.status(201);
+  return res.status(201).json();
 }));
 
 export default router;
