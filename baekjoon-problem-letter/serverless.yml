@@ -6,6 +6,16 @@ provider:
   name: aws
   runtime: nodejs22.x
 
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:DeleteItem"
+          Resource:
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+
 functions:
   api:
     handler: app.application
