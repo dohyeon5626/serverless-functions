@@ -1,5 +1,11 @@
 import { getUserInfo, getProblem } from "../plugin/client.js";
 import { deleteSubscription, saveSubscription } from "../plugin/repository.js";
+import { sendSubscriptionEmail } from "../plugin/email.js";
+
+const dayMap = {
+  'MON': '월', 'TUE': '화', 'WED': '수', 'THU': '목', 
+  'FRI': '금', 'SAT': '토', 'SUN': '일'
+};
 
 export const createSubscription = async (subscriptionData) => {
     const problemInfo = await getNewProblemInfo(subscriptionData.userId, subscriptionData.problemCount);
@@ -12,6 +18,14 @@ export const createSubscription = async (subscriptionData) => {
         sendDays: subscriptionData.sendDays,
         problemSize: problemInfo.problemSize,
         problems: problemInfo.problems
+    });
+
+    await sendSubscriptionEmail({
+        email: subscriptionData.email,
+        userId: subscriptionData.userId,
+        days: subscriptionData.sendDays.map(day => dayMap[day]).join(', '),
+        time: subscriptionData.sendTime,
+        problemCount: subscriptionData.problemCount
     });
 }
 

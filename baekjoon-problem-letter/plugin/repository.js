@@ -16,6 +16,8 @@ export const saveSubscription = async (subscriptionData) => {
             sendTime: subscriptionData.sendTime,
             problemCount: subscriptionData.problemCount,
             sendDays: subscriptionData.sendDays,
+            sendRound: 0,
+            problemGeneratedAt: new Date().getTime(),
             problemSize: subscriptionData.problemSize,
             problems: subscriptionData.problems
         },
