@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, DeleteCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import AppError from "../routes/exception.js";
 
 const TABLE = process.env.TABLE;
@@ -55,3 +55,43 @@ export const deleteSubscription = async (email) => {
         throw new AppError(500, "Failed to delete subscription");
     }
 }
+
+export const findSubscriptionsByTime = async (day, time) => {
+    const scanParams = {
+        TableName: TABLE,
+        FilterExpression: "contains(sendDays, :day) and sendTime = :time",
+        ExpressionAttributeValues: {
+            ":day": day,
+            ":time": time,
+        },
+    };
+
+    try {
+        const { Items } = await docClient.send(new ScanCommand(scanParams));
+        return Items;
+    } catch (error) {
+        console.error("Error scanning subscriptions:", error);
+        throw new Error("데이터 조회 실패");
+    }
+};
+
+export const updateSubscriptionRound = async (id, newSendRound) => {
+    const newProblemGeneratedAt = new Date().getTime();
+
+    const updateParams = {
+        TableName: TABLE,
+        Key: { id },
+        UpdateExpression: "set sendRound = :round, problemGeneratedAt = :generatedAt",
+        ExpressionAttributeValues: {
+            ":round": newSendRound,
+            ":generatedAt": newProblemGeneratedAt,
+        },
+    };
+
+    try {
+        await docClient.send(new UpdateCommand(updateParams));
+    } catch (error) {
+        console.error(`Error updating subscription ${id}:`, error);
+        throw new Error("데이터 업데이트 실패");
+    }
+};

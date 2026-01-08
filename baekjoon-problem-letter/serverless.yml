@@ -27,6 +27,10 @@ functions:
     handler: app.application
     events:
       - httpApi: "*"
+  letterEvent:
+    handler: letter-event.run
+    timeout: 300
+    memorySize: 1024
 
 plugins:
   - serverless-offline

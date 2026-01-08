@@ -40,7 +40,7 @@ const getNewProblemInfo = async (userId, problemCount) => {
     const items = res.items
         .map(item => ({
             problemId: item.problemId,
-            titleKo: item.titleKo,
+            title: item.titleKo,
             tier: item.level,
             averageTries: item.averageTries,
         }))
@@ -48,7 +48,7 @@ const getNewProblemInfo = async (userId, problemCount) => {
             if (a.tier !== b.tier) {
                 return b.tier - a.tier;
             }
-            return a.averageTries - b.averageTries;
+            return b.averageTries - a.averageTries;
         });
 
     const chunkSize = Math.floor(items.length / problemCount);
