@@ -1,7 +1,7 @@
 import { getUserInfo, getProblem } from "../plugin/client.js";
 import { deleteSubscription, saveSubscription } from "../plugin/repository.js";
 import { sendSubscriptionEmail } from "../plugin/email.js";
-import { dayWordMap } from "../util/date.js"
+import { dayWordMap } from "../util/code.js"
 
 export const createSubscription = async (subscriptionData) => {
     const problemInfo = await getNewProblemInfo(subscriptionData.userId, subscriptionData.problemCount);

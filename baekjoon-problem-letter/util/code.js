@@ -5,7 +5,7 @@ export const dayWordMap = {
   'FRI': '금', 'SAT': '토', 'SUN': '일'
 };
 
-const tierWordMap = {
+export const tierWordMap = {
     1: 'Bronze V',
     2: 'Bronze IV',
     3: 'Bronze III',

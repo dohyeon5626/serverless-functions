@@ -1,6 +1,6 @@
 import { sendLetterEmail } from "./plugin/email.js";
 import { findSubscriptionsByTime, updateSubscriptionRound } from "./plugin/repository.js";
-import { dayList, tierWordMap } from "./util/date.js";
+import { dayList, tierWordMap } from "./util/code.js";
 
 export const run = async (event) => {
     // console.log("Event time:", event.time);
