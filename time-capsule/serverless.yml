@@ -74,6 +74,8 @@ functions:
 
   alimEvent:
     handler: alim-event.run
+    timeout: 30
+    memorySize: 1024
 
 resources:
   Resources:

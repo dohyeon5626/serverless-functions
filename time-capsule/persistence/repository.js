@@ -86,18 +86,24 @@ export const getSubscriptionCounts = async () => {
     }
 }
 
-export const findAllSubscriptionByOpenDate = async (openDateTime) => {
+export const findAllSubscriptionByOpenDate = async (openDateTime, lastEvaluatedKey) => {
     const params = {
         TableName: TABLE,
         IndexName: "OpenDateIndex",
         KeyConditionExpression: "openDate = :sendDate",
         ExpressionAttributeValues: {
             ":sendDate" : openDateTime,
-        }
+        },
+        Limit: 100
     };
 
+    if (lastEvaluatedKey) {
+        params.ExclusiveStartKey = lastEvaluatedKey;
+    }
+
     try {
-        return (await docClient.send(new QueryCommand(params))).Items;
+        const { Items, LastEvaluatedKey } = await docClient.send(new QueryCommand(params));
+        return { Items, LastEvaluatedKey };
     } catch (error) {
         console.log("Error querying subscription counts:", error);
         throw new Error("발송할 구독 목록 조회 실패");
