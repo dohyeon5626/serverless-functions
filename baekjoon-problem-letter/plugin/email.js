@@ -11,7 +11,7 @@ export const sendSubscriptionEmail = async (subscriptionData) => {
         },
         Message: {
             Subject: {
-                Data: `[baekjoon-problem-letter] ${subscriptionData.userId}님의 구독 신청이 완료되었습니다! 😃`,
+                Data: `[구독 완료] ${subscriptionData.userId}님의 구독 신청이 완료되었습니다! 😃`,
                 Charset: "UTF-8",
             },
             Body: {
@@ -87,19 +87,6 @@ export const sendSubscriptionEmail = async (subscriptionData) => {
                                                             </td>
                                                         </tr>
 
-                                                        <tr>
-                                                            <td align="left" valign="top" style="padding: 8px 0 8px 24px; font-family: Pretendard, sans-serif; white-space: nowrap;">
-                                                                <span style="color: #94a3b8; font-size: 14px; font-weight: 700; display: inline-block; white-space: nowrap;">
-                                                                    문제 개수
-                                                                </span>
-                                                            </td>
-                                                            <td align="right" valign="top" style="padding: 8px 24px 8px 12px; font-family: Pretendard, sans-serif;">
-                                                                <span style="color: #059669; font-size: 16px; font-weight: 800; display: inline-block;">
-                                                                    ${subscriptionData.problemCount}개
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-
                                                         <tr><td colspan="2" height="28"></td></tr>
                                                     </table>
                                                 </td>
@@ -147,7 +134,7 @@ export const sendLetterEmail = async (date, subscriptionData, levelProblems) => 
         },
         Message: {
             Subject: {
-                Data: `[baekjoon-problem-letter] ${subscriptionData.userId}님을 위한 ${date} 알고리즘 문제가 도착했습니다! 🌟`,
+                Data: `[문제 추천] ${subscriptionData.userId}님을 위한 ${date} 알고리즘 문제가 도착했습니다! 🌟`,
                 Charset: "UTF-8",
             },
             Body: {

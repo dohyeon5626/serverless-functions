@@ -9,12 +9,11 @@ router.post("/subscription", asyncHandler(async (req, res) => {
   const { 
     userId, 
     email, 
-    sendTime, 
-    problemCount,
+    sendTime,
     sendDays
   } = req.body;
   
-  if (!userId || !email || !sendTime || !problemCount || !sendDays) {
+  if (!userId || !email || !sendTime || !sendDays) {
     throw new AppError(404, 'Bad Request');
   }
   
@@ -22,7 +21,6 @@ router.post("/subscription", asyncHandler(async (req, res) => {
     userId, 
     email, 
     sendTime,
-    problemCount,
     sendDays
   });
 

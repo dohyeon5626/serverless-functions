@@ -4,13 +4,12 @@ import { sendSubscriptionEmail } from "../plugin/email.js";
 import { dayWordMap } from "../util/code.js"
 
 export const createSubscription = async (subscriptionData) => {
-    const problemInfo = await getNewProblemInfo(subscriptionData.userId, subscriptionData.problemCount);
+    const problemInfo = await getNewProblemInfo(subscriptionData.userId);
 
     await saveSubscription({
         userId: subscriptionData.userId, 
         email: subscriptionData.email, 
         sendTime: subscriptionData.sendTime,
-        problemCount: subscriptionData.problemCount,
         sendDays: subscriptionData.sendDays,
         problemSize: problemInfo.problemSize,
         problems: problemInfo.problems
@@ -29,7 +28,7 @@ export const cancelSubscription = async (email) => {
     await deleteSubscription(email);
 }
 
-const getNewProblemInfo = async (userId, problemCount) => {
+const getNewProblemInfo = async (userId) => {
     const { tier } = await getUserInfo(userId);
     const res = await getProblem(userId, tier);
 
@@ -47,14 +46,14 @@ const getNewProblemInfo = async (userId, problemCount) => {
             return b.averageTries - a.averageTries;
         });
 
-    const chunkSize = Math.floor(items.length / problemCount);
+    const chunkSize = Math.floor(items.length / 5);
     if (chunkSize === 0) return [];
 
     const result = [];
-    for (let i = 0; i < problemCount; i++) {
+    for (let i = 0; i < 5; i++) {
         const start = i * chunkSize;
         const end = start + chunkSize;
-        result.push(items.slice(start, end));
+        result.push(items.slice(start, end).reverse());
     }
 
     return {
