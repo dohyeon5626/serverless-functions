@@ -17,25 +17,30 @@ export const run = async (event) => {
     const dateString = "2025년 9월 10일"
 
     try {
-        const Items = await findSubscriptionsByTime(dayName, timeString);
-        console.log(Items);
+        let lastEvaluatedKey = null;
 
-        for (const item of Items) {
-            const { id, problems, sendRound, problemSize } = item;
+        do {
+            const { Items, LastEvaluatedKey } = await findSubscriptionsByTime(dayName, timeString, lastEvaluatedKey);
+            console.log(Items);
 
-            if (sendRound >= problemSize) continue; // TODO 제떄 업데이트가 안되어서 생긴 케이스
-            
-            const newProblems = problems.map(levalProblems => levalProblems[sendRound]);
-            await updateSubscriptionRound(id, sendRound + 1);
+            for (const item of Items) {
+                const { id, problems, sendRound, problemSize } = item;
 
-            await sendLetterEmail(dateString, {
-                email: item.id,
-                userId: item.userId
-            }, newProblems.map(problem => ({
-                ...problem,
-                tierTitle: tierWordMap[[problem.tier]]
-            })))
-        }
+                if (sendRound >= problemSize) continue;
+
+                const newProblems = problems.map(levalProblems => levalProblems[sendRound]);
+                await updateSubscriptionRound(id, sendRound + 1);
+
+                await sendLetterEmail(dateString, {
+                    email: item.id,
+                    userId: item.userId
+                }, newProblems.map(problem => ({
+                    ...problem,
+                    tierTitle: tierWordMap[[problem.tier]]
+                })))
+            }
+            lastEvaluatedKey = LastEvaluatedKey;
+        } while (lastEvaluatedKey)
     } catch (error) {
         console.error("Error processing subscriptions:", error);
     }

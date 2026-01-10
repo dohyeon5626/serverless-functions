@@ -56,7 +56,7 @@ export const deleteSubscription = async (email) => {
     }
 }
 
-export const findSubscriptionsByTime = async (day, time) => {
+export const findSubscriptionsByTime = async (day, time, lastEvaluatedKey) => {
     const scanParams = {
         TableName: TABLE,
         FilterExpression: "contains(sendDays, :day) and sendTime = :time",
@@ -64,11 +64,16 @@ export const findSubscriptionsByTime = async (day, time) => {
             ":day": day,
             ":time": time,
         },
+        Limit: 100
     };
 
+    if (lastEvaluatedKey) {
+        scanParams.ExclusiveStartKey = lastEvaluatedKey;
+    }
+
     try {
-        const { Items } = await docClient.send(new ScanCommand(scanParams));
-        return Items;
+        const { Items, LastEvaluatedKey } = await docClient.send(new ScanCommand(scanParams));
+        return { Items, LastEvaluatedKey };
     } catch (error) {
         console.error("Error scanning subscriptions:", error);
         throw new Error("데이터 조회 실패");
