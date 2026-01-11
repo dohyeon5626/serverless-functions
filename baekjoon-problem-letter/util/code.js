@@ -5,6 +5,10 @@ export const dayWordMap = {
   'FRI': '금', 'SAT': '토', 'SUN': '일'
 };
 
+export const dayNameToIndex = {
+    'SUN': 0, 'MON': 1, 'TUE': 2, 'WED': 3, 'THU': 4, 'FRI': 5, 'SAT': 6
+};
+
 export const tierWordMap = {
     1: 'Bronze V',
     2: 'Bronze IV',

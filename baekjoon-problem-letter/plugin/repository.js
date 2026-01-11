@@ -18,6 +18,7 @@ export const saveSubscription = async (subscriptionData) => {
             sendDays: subscriptionData.sendDays,
             sendRound: 0,
             problemGeneratedAt: new Date().getTime(),
+            nextGeneratedDate: subscriptionData.nextGeneratedDate,
             problemSize: subscriptionData.problemSize,
             problems: subscriptionData.problems
         },
@@ -80,16 +81,14 @@ export const findSubscriptionsByTime = async (day, time, lastEvaluatedKey) => {
     }
 };
 
-export const updateSubscriptionRound = async (id, newSendRound) => {
-    const newProblemGeneratedAt = new Date().getTime();
-
+export const updateSubscriptionRound = async (id, newSendRound, nextGeneratedDate) => {
     const updateParams = {
         TableName: TABLE,
         Key: { id },
-        UpdateExpression: "set sendRound = :round, problemGeneratedAt = :generatedAt",
+        UpdateExpression: "set sendRound = :round, nextGeneratedDate = :nextGeneratedDate",
         ExpressionAttributeValues: {
             ":round": newSendRound,
-            ":generatedAt": newProblemGeneratedAt,
+            ":nextGeneratedDate": nextGeneratedDate
         },
     };
 

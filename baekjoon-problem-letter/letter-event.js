@@ -1,6 +1,7 @@
 import { sendLetterEmail } from "./plugin/email.js";
 import { findSubscriptionsByTime, updateSubscriptionRound } from "./plugin/repository.js";
 import { dayList, tierWordMap } from "./util/code.js";
+import { calculateNextGeneratedDate } from "./service/service.js";
 
 export const run = async (event) => {
     // console.log("Event time:", event.time);
@@ -12,8 +13,8 @@ export const run = async (event) => {
 
     // console.log(`KST: ${kst}, Time: ${timeString}, Day: ${dayName}`);
 
-    const dayName = "MON";
-    const timeString = "09:00";
+    const dayName = "SUN";
+    const timeString = "19:00";
     const dateString = "2025년 9월 10일"
 
     try {
@@ -21,7 +22,6 @@ export const run = async (event) => {
 
         do {
             const { Items, LastEvaluatedKey } = await findSubscriptionsByTime(dayName, timeString, lastEvaluatedKey);
-            console.log(Items);
 
             for (const item of Items) {
                 const { id, problems, sendRound, problemSize } = item;
@@ -29,7 +29,8 @@ export const run = async (event) => {
                 if (sendRound >= problemSize) continue;
 
                 const newProblems = problems.map(levalProblems => levalProblems[sendRound]);
-                await updateSubscriptionRound(id, sendRound + 1);
+                const nextGeneratedDateString = calculateNextGeneratedDate(item.sendDays);
+                await updateSubscriptionRound(id, sendRound + 1, nextGeneratedDateString);
 
                 await sendLetterEmail(dateString, {
                     email: item.id,
