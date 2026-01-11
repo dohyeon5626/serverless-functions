@@ -9,14 +9,17 @@ provider:
   iam:
     role:
       statements:
+
         - Effect: "Allow"
           Action:
             - "dynamodb:PutItem"
             - "dynamodb:DeleteItem"
             - "dynamodb:Scan"
             - "dynamodb:UpdateItem"
+            - "dynamodb:Query"
           Resource:
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+
         - Effect: "Allow"
           Action:
             - "ses:SendEmail"
@@ -24,11 +27,26 @@ provider:
           Resource:
             - "arn:aws:ses:${aws:region}:${aws:accountId}:identity/${env:SENDER_EMAIL}"
 
+        - Effect: "Allow"
+          Action:
+            - "scheduler:CreateSchedule"
+            - "scheduler:GetSchedule"
+            - "scheduler:DeleteSchedule"
+          Resource: "*"
+
+        - Effect: "Allow"
+          Action:
+            - "iam:PassRole"
+          Resource:
+            - !Sub "arn:aws:iam::${AWS::AccountId}:role/ProblemUpdateSchedulerRole"
+
 functions:
+
   api:
     handler: app.application
     events:
       - httpApi: "*"
+
   letterEvent:
     handler: letter-event.run
     events:
@@ -36,12 +54,38 @@ functions:
       - schedule: cron(0,30 0-14 * * ? *) # KST 09:00 ~ 23:30 (UTC 00:00 ~ 14:30)
     timeout: 300
     memorySize: 1024
+
   tierUpdateEvent:
     handler: tier-update-event.run
     events:
       - schedule: cron(0 15 * * ? *)
     timeout: 300
     memorySize: 1024
+    environment:
+      SCHEDULER_ROLE_ARN: !GetAtt SchedulerExecutionRole.Arn
+      TARGET_LAMBDA_ARN: "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${sls:stage}-tierUpdateEvent"
+
+resources:
+  Resources:
+    SchedulerExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ProblemUpdateSchedulerRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: scheduler.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: InvokeLambdaPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: lambda:InvokeFunction
+                  Resource: "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${sls:stage}-tierUpdateEvent"
 
 plugins:
   - serverless-offline
