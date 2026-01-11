@@ -36,6 +36,12 @@ functions:
       - schedule: cron(0,30 0-14 * * ? *) # KST 09:00 ~ 23:30 (UTC 00:00 ~ 14:30)
     timeout: 300
     memorySize: 1024
+  tierUpdateEvent:
+    handler: tier-update-event.run
+    events:
+      - schedule: cron(0 15 * * ? *)
+    timeout: 300
+    memorySize: 1024
 
 plugins:
   - serverless-offline

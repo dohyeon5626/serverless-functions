@@ -14,30 +14,34 @@ export const run = async (event) => {
     console.log(`KST: ${kst}, Time: ${timeString}, Day: ${dayName}`);
 
     try {
-        let lastEvaluatedKey = null;
+        let nowLastEvaluatedKey = null;
 
         do {
-            const { Items, LastEvaluatedKey } = await findSubscriptionsByTime(dayName, timeString, lastEvaluatedKey);
+            const { items, lastEvaluatedKey } = await findSubscriptionsByTime(dayName, timeString, nowLastEvaluatedKey);
 
-            for (const item of Items) {
-                const { id, problems, sendRound, problemSize } = item;
+            for (const subscription of items) {
+                const { id, userId, problems, sendRound, problemSize, sendDays } = subscription;
 
                 if (sendRound >= problemSize) continue;
 
                 const newProblems = problems.map(levalProblems => levalProblems[sendRound]);
-                const nextGeneratedDateString = calculateNextGeneratedDate(item.sendDays);
-                await updateSubscriptionRound(id, sendRound + 1, nextGeneratedDateString);
+                const nextGeneratedDateString = calculateNextGeneratedDate(sendDays);
+                try {
+                    await updateSubscriptionRound(id, sendRound + 1, nextGeneratedDateString);
 
-                await sendLetterEmail(dateString, {
-                    email: item.id,
-                    userId: item.userId
-                }, newProblems.map(problem => ({
-                    ...problem,
-                    tierTitle: tierWordMap[[problem.tier]]
-                })))
+                    await sendLetterEmail(dateString, {
+                        email: id,
+                        userId: userId
+                    }, newProblems.map(problem => ({
+                        ...problem,
+                        tierTitle: tierWordMap[[problem.tier]]
+                    })))
+                } catch (error) {
+                    console.error(`Error sending letter subscription ${id}:`, error);
+                }
             }
-            lastEvaluatedKey = LastEvaluatedKey;
-        } while (lastEvaluatedKey)
+            nowLastEvaluatedKey = lastEvaluatedKey;
+        } while (nowLastEvaluatedKey)
     } catch (error) {
         console.error("Error processing subscriptions:", error);
     }
