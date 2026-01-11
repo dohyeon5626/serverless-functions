@@ -43,10 +43,11 @@ export const deleteSubscription = async (email) => {
             id: email,
         },
         ConditionExpression: "attribute_exists(id)",
+        ReturnValues: "ALL_OLD"
     };
 
     try {
-        await docClient.send(new DeleteCommand(deleteParams));
+        return (await docClient.send(new DeleteCommand(deleteParams))).Attributes;
     } catch (error) {
         if (error.name === "ConditionalCheckFailedException") {
             throw new AppError(404, "Subscription not found");

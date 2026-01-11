@@ -1,6 +1,6 @@
 import { getUserInfo, getProblem } from "../plugin/client.js";
 import { deleteSubscription, saveSubscription } from "../plugin/repository.js";
-import { sendSubscriptionEmail } from "../plugin/email.js";
+import { sendAddSubscriptionEmail, sendCancelSubscriptionEmail } from "../plugin/email.js";
 import { dayWordMap, dayNameToIndex } from "../util/code.js"
 
 export const createSubscription = async (subscriptionData) => {
@@ -17,7 +17,7 @@ export const createSubscription = async (subscriptionData) => {
         problems: problemInfo.problems
     });
 
-    await sendSubscriptionEmail({
+    await sendAddSubscriptionEmail({
         email: subscriptionData.email,
         userId: subscriptionData.userId,
         days: subscriptionData.sendDays.map(day => dayWordMap[day]).join(', '),
@@ -27,7 +27,11 @@ export const createSubscription = async (subscriptionData) => {
 }
 
 export const cancelSubscription = async (email) => {
-    await deleteSubscription(email); // TODO 구독 취소 이메일
+    const deletedSubscription = await deleteSubscription(email);
+    await sendCancelSubscriptionEmail({
+        email: deletedSubscription.id,
+        userId: deletedSubscription.userId
+    });
 }
 
 export const getNewProblemInfo = async (userId) => {
