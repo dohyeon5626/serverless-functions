@@ -4,18 +4,14 @@ import { dayList, tierWordMap } from "./util/code.js";
 import { calculateNextGeneratedDate } from "./service/service.js";
 
 export const run = async (event) => {
-    // console.log("Event time:", event.time);
-    // const utc = new Date(event.time);
-    // const kst = new Date(utc.getTime() + 9 * 60 * 60 * 1000);
-    // const timeString = kst.toTimeString().slice(0, 5);
-    // const dayName = dayList[kst.getDay()];
-    // const dateString = kst.getFullYear() + "년 " + (kst.getMonth() + 1) + "월 " + kst.getDate() + "일";
+    console.log("Event time:", event.time);
+    const utc = new Date(event.time);
+    const kst = new Date(utc.getTime() + 9 * 60 * 60 * 1000);
+    const timeString = kst.toTimeString().slice(0, 5);
+    const dayName = dayList[kst.getDay()];
+    const dateString = kst.getFullYear() + "년 " + (kst.getMonth() + 1) + "월 " + kst.getDate() + "일";
 
-    // console.log(`KST: ${kst}, Time: ${timeString}, Day: ${dayName}`);
-
-    const dayName = "SUN";
-    const timeString = "19:00";
-    const dateString = "2025년 9월 10일"
+    console.log(`KST: ${kst}, Time: ${timeString}, Day: ${dayName}`);
 
     try {
         let lastEvaluatedKey = null;

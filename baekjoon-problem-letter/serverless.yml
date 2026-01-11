@@ -13,6 +13,8 @@ provider:
           Action:
             - "dynamodb:PutItem"
             - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+            - "dynamodb:UpdateItem"
           Resource:
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
         - Effect: "Allow"
@@ -29,6 +31,9 @@ functions:
       - httpApi: "*"
   letterEvent:
     handler: letter-event.run
+    events:
+      - schedule: cron(0,30 21-23 * * ? *) # KST 06:00 ~ 08:30 (UTC 전날 21:00 ~ 23:30)
+      - schedule: cron(0,30 0-14 * * ? *) # KST 09:00 ~ 23:30 (UTC 00:00 ~ 14:30)
     timeout: 300
     memorySize: 1024
 
