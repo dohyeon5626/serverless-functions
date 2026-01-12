@@ -1,0 +1,20 @@
+{
+  "name": "baekjoon-problem-letter",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.962.0",
+    "@aws-sdk/client-scheduler": "^3.966.0",
+    "@aws-sdk/client-ses": "^3.964.0",
+    "@aws-sdk/lib-dynamodb": "^3.962.0",
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^14.4.0"
+  }
+}
