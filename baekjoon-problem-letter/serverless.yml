@@ -19,6 +19,7 @@ provider:
             - "dynamodb:Query"
           Resource:
             - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}/index/NextGeneratedDateIndex"
 
         - Effect: "Allow"
           Action:

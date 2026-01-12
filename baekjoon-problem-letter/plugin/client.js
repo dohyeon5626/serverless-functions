@@ -26,8 +26,8 @@ export const getUserInfo = async (userId) => {
 
 export const getProblem = async (userId, tier) => {
     try {
-        const minTier = tier > 1 ? tier - 1 : 1;
-        const maxTier = tier < 30 ? tier + 1 : 30;
+        const minTier = tier > 1 ? tier - 4 : 1;
+        const maxTier = tier < 30 ? tier + 4 : 30;
         const query = `(*${minTier}..${maxTier})(-@${userId})`;
 
         const { data } = await base.get("/search/problem", {
