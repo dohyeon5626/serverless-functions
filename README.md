@@ -3,12 +3,35 @@
 ![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green) ![Api Gateway](https://img.shields.io/badge/api_gateway-running-blue) ![Event Bridge](https://img.shields.io/badge/event_bridge-running-blue)
 <br/><br/>
 
+<img width="100%" align=center alt="readme" src="https://github.com/user-attachments/assets/c97dee6d-5fb4-46eb-af65-917e23af0a88">
+<br/><br/>
+
 각종 개인 프로젝트에서 쓰이는 서버리스 함수 모노레포입니다.<br/>
 확장 프로그램, 단순한 웹 서비스, 배치성 프로그램 등 단순하고 작은 개인 프로젝트들을 위한 서버 기능이 필요할 때 사용합니다.<br/>
-[Serverless 프레임워크](https://www.serverless.com)를 이용하여 개발되었고,<br/>
-AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 서비스를 사용 중입니다.
+[Serverless 프레임워크](https://www.serverless.com)를 이용하여 개발되었습니다.<br/>
+<br/>
 
 ---
+
+### baekjoon-problem-letter
+문제 추천 구독 정보 저장 및 이메일 발송, 배치를 통한 문제 추천 기능을 운영 중입니다.
+> [Baekjoon Problem Letter](https://github.com/dohyeon5626/baekjoon-problem-letter)
+```
+1. 구독 생성 Api
+- POST /subscription
+
+2. 구독 취소 Api
+- DELETE /subscription
+
+3. 문제 추천 이메일 발송 배치
+- cron(0,30 21-23 * * ? *) // 매일 KST 06:00 ~ 08:30
+- cron(0,30 0-14 * * ? *) // 매일 KST 09:00 ~ 23:30
+
+4. 티어 업데이트 및 문제 업데이트 배치
+- cron(0 15 * * ? *) // 매일 KST 00:00
+- 티어 업데이트 관련 eventBridge // 요청 수 제한을 벗어나기 위해서 여러번에 걸쳐서 배치를 진행함
+```
+
 
 ### github-html-preview
 깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 운영중입니다.
@@ -33,8 +56,8 @@ AWS의 Lambda, Api Gateway, Event Bridge, DynamoDB, Simple Email Service 등의 
 이와 함께 현재 사용자 수와 다운로드 수 등의 지표를 파악하는 데에도 사용하고 있습니다.<br/>
 > Github Html Preview Extension, Auto Gitkeep Plugin, Spreadsheets Filter Extension 서비스 정보를 제공합니다.
 ```
-1. 현재 상태를 알림 발송 batch (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
-- cron(10 0 * * ? *) // 매일 KST 오전 9시 10분
+1. 현재 상태를 알림 발송 배치 (사용자 수, 확장프로그램이 의존하고 있는 웹 선택자의 변경 여부)
+- cron(10 0 * * ? *) // 매일 KST 09:10
 ```
 
 ### time-capsule
