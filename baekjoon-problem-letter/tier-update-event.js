@@ -15,7 +15,7 @@ export const run = async (event) => {
     const subscriptions = await findSubscriptionsByNextGeneratedDate(dateString);
     console.log(subscriptions);
     for (const subscription of subscriptions) {
-        if (subscription.sendRound == 0) return;
+        if (subscription.sendRound == 0) continue;
         try {
             const problemInfo = await getNewProblemInfo(subscription.userId);
             await updateSubscriptionProblemInfo(subscription.id, problemInfo);

@@ -28,7 +28,7 @@ export const getProblem = async (userId, tier) => {
     try {
         const minTier = tier > 1 ? tier - 4 : 1;
         const maxTier = tier < 30 ? tier + 4 : 30;
-        const query = `(*${minTier}..${maxTier})(-@${userId})`;
+        const query = `(*${minTier}..${maxTier})(-@${userId})(lang:ko)`;
 
         const { data } = await base.get("/search/problem", {
             params: {
