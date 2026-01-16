@@ -123,16 +123,17 @@ export const findSubscriptionsByNextGeneratedDate = async (
     }
 };
 
-export const updateSubscriptionProblemInfo = async (id, problemInfo) => {
+export const updateSubscriptionProblemInfo = async (id, problemInfo, nextGeneratedDate) => {
     const updateParams = {
         TableName: TABLE,
         Key: { id },
-        UpdateExpression: "set sendRound = :round, problemGeneratedAt = :problemGeneratedAt, problems = :problems, problemSize = :problemSize",
+        UpdateExpression: "set sendRound = :round, problemGeneratedAt = :problemGeneratedAt, problems = :problems, problemSize = :problemSize, nextGeneratedDate = :nextGeneratedDate",
         ExpressionAttributeValues: {
             ":round": 0,
             ":problemGeneratedAt": new Date().getTime(),
             ":problems": problemInfo.problems,
             ":problemSize": problemInfo.problemSize,
+            ":nextGeneratedDate": nextGeneratedDate
         },
     };
 
