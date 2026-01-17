@@ -1,5 +1,5 @@
 import { findSubscriptionsByNextGeneratedDate, updateSubscriptionProblemInfo } from "./plugin/repository.js";
-import { getNewProblemInfo } from "./service/service.js";
+import { getNewProblemInfo, calculateNextGeneratedDate } from "./service/service.js";
 import { SchedulerClient, CreateScheduleCommand } from "@aws-sdk/client-scheduler";
 
 const client = new SchedulerClient({});
@@ -15,10 +15,12 @@ export const run = async (event) => {
     const subscriptions = await findSubscriptionsByNextGeneratedDate(dateString);
     console.log(subscriptions);
     for (const subscription of subscriptions) {
-        if (subscription.sendRound == 0) return;
+        if (subscription.sendRound == 0) continue;
         try {
             const problemInfo = await getNewProblemInfo(subscription.userId);
-            await updateSubscriptionProblemInfo(subscription.id, problemInfo);
+            const nextGeneratedDateString = calculateNextGeneratedDate(sendDays);
+
+            await updateSubscriptionProblemInfo(subscription.id, problemInfo, nextGeneratedDateString);
         } catch (error) {
             console.error(`Error updating subscription ${subscription.id}:`, error);
         }
