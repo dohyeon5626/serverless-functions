@@ -18,7 +18,7 @@ export const run = async (event) => {
         if (subscription.sendRound == 0) continue;
         try {
             const problemInfo = await getNewProblemInfo(subscription.userId);
-            const nextGeneratedDateString = calculateNextGeneratedDate(sendDays);
+            const nextGeneratedDateString = calculateNextGeneratedDate(subscription.sendDays);
 
             await updateSubscriptionProblemInfo(subscription.id, problemInfo, nextGeneratedDateString);
         } catch (error) {
