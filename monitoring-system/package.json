@@ -1,7 +1,6 @@
 {
   "name": "monitoring-system",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
     "@sparticuz/chromium-min": "^133.0.0",
     "axios": "^1.8.4",
@@ -9,7 +8,9 @@
     "puppeteer-core": "^24.8.0"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "puppeteer": "^24.8.0",
-    "serverless-dotenv-plugin": "^6.0.0"
+    "serverless-dotenv-plugin": "^6.0.0",
+    "typescript": "^5.8.0"
   }
 }
