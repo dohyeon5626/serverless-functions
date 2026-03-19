@@ -30,7 +30,7 @@ provider:
           Action:
             - "s3:PutObject"
             - "s3:DeleteObject"
-          Resource: 
+          Resource:
           - "arn:aws:s3:::${env:BUCKET}/*"
 
         - Effect: "Allow"
@@ -46,7 +46,7 @@ provider:
             - "scheduler:GetSchedule"
             - "scheduler:DeleteSchedule"
           Resource: "*"
-        
+
         - Effect: "Allow"
           Action:
             - "iam:PassRole"
@@ -98,6 +98,13 @@ resources:
                 - Effect: Allow
                   Action: lambda:InvokeFunction
                   Resource: !GetAtt AlimEventLambdaFunction.Arn
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
 
 plugins:
   - serverless-offline
