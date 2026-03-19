@@ -14,6 +14,13 @@ functions:
     timeout: 30
     memorySize: 1024
 
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
+
 plugins:
   - serverless-dotenv-plugin
 

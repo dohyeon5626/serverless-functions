@@ -88,6 +88,13 @@ resources:
                   Action: lambda:InvokeFunction
                   Resource: "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${sls:stage}-tierUpdateEvent"
 
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
+
 plugins:
   - serverless-offline
   - serverless-dotenv-plugin
