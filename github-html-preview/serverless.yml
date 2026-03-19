@@ -12,6 +12,13 @@ functions:
     events:
       - httpApi: "*"
 
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
+
 plugins:
   - serverless-offline
   - serverless-dotenv-plugin
