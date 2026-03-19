@@ -10,109 +10,83 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const TEST_GITHUB_CLIENT_ID = process.env.TEST_GITHUB_CLIENT_ID;
 const TEST_GITHUB_CLIENT_SECRET = process.env.TEST_GITHUB_CLIENT_SECRET;
 
-const EXTENSION_ID = 'pmpjligbgooljdpakhophgddmcipglna'
+const EXTENSION_ID = 'pmpjligbgooljdpakhophgddmcipglna';
+
+const getGithubCredentials = (redirectUri) => redirectUri.includes(EXTENSION_ID)
+  ? { clientId: GITHUB_CLIENT_ID, clientSecret: GITHUB_CLIENT_SECRET }
+  : { clientId: TEST_GITHUB_CLIENT_ID, clientSecret: TEST_GITHUB_CLIENT_SECRET };
+
+const fetchFromGithub = (proxyPath, githubToken) =>
+  axios.get(`https://raw.githubusercontent.com/${proxyPath}`, {
+    headers: { Authorization: `token ${githubToken}` },
+    responseType: 'arraybuffer',
+    validateStatus: () => true,
+  });
 
 export const getContent = async (user, repo, proxyPath, token) => {
   let response;
+
   if (token.startsWith("ey")) {
-    let payload
+    let payload;
     try {
       payload = await decryptJWEAndGetPayload(token, SECRET_KEY);
-    } catch (error) {
+    } catch {
       throw new AppError(401, 'Invalid Token');
     }
-    if (
-      payload.user &&
-      payload.repo &&
+
+    const isValid =
       payload.user === user &&
       payload.repo === repo &&
-      payload.exp > Math.floor(Date.now() / 1000)
-    ) {
-      if (!payload.token && (!payload.tokenList || !Array.isArray(payload.tokenList)))
-        throw new AppError(401, 'Invalid Token');
-      if (payload.token) {
-        response = await axios.get(`https://raw.githubusercontent.com/${proxyPath}`, {
-          headers: {
-            Authorization: `token ${payload.token}`
-          },
-          responseType: 'arraybuffer',
-          validateStatus: () => true
-        });
-      } else {
-        for(let githubToken of payload.tokenList) {
-          response = await axios.get(`https://raw.githubusercontent.com/${proxyPath}`, {
-            headers: {
-              Authorization: `token ${githubToken}`
-            },
-            responseType: 'arraybuffer',
-            validateStatus: () => true
-          });
-          if (response.status === 200) break;
-        }
-      }
-    } else {
+      payload.exp > Math.floor(Date.now() / 1000);
+
+    if (!isValid) throw new AppError(401, 'Invalid Token');
+    if (!payload.token && (!payload.tokenList || !Array.isArray(payload.tokenList)))
       throw new AppError(401, 'Invalid Token');
+
+    if (payload.token) {
+      response = await fetchFromGithub(proxyPath, payload.token);
+    } else {
+      for (const githubToken of payload.tokenList) {
+        response = await fetchFromGithub(proxyPath, githubToken);
+        if (response.status === 200) break;
+      }
     }
   } else {
-    response = await axios.get(`https://raw.githubusercontent.com/${proxyPath}`, {
-      headers: {
-        Authorization: `token ${token}`
-      },
-      responseType: 'arraybuffer',
-      validateStatus: () => true
-    });
+    response = await fetchFromGithub(proxyPath, token);
   }
 
   return {
     contentType: response.headers['content-type'],
     status: response.status,
-    data: Buffer.from(response.data)
-  }
-}
+    data: Buffer.from(response.data),
+  };
+};
 
 export const getToken = async (user, repo, githubToken, githubTokenList) => {
-  if (githubToken) {
-    return await createJWE({
-      user,
-      repo,
-      token: githubToken,
-      exp: Math.floor(Date.now() / 1000) + 3600
-    }, SECRET_KEY);
-  } else {
-    return await createJWE({
-      user,
-      repo,
-      tokenList: githubTokenList,
-      exp: Math.floor(Date.now() / 1000) + 3600
-    }, SECRET_KEY);
-  }
-}
-
-const getGithubClientId = (redirectUri) => redirectUri.includes(EXTENSION_ID) ? GITHUB_CLIENT_ID : TEST_GITHUB_CLIENT_ID;
-const getGithubClientSecret = (redirectUri) => redirectUri.includes(EXTENSION_ID) ? GITHUB_CLIENT_SECRET : TEST_GITHUB_CLIENT_SECRET;
+  const tokenPayload = githubToken ? { token: githubToken } : { tokenList: githubTokenList };
+  return createJWE(
+    { user, repo, ...tokenPayload, exp: Math.floor(Date.now() / 1000) + 3600 },
+    SECRET_KEY
+  );
+};
 
 export const getGithubAuthorizeUrl = (redirectUri) => {
-  return `https://github.com/login/oauth/authorize?client_id=${getGithubClientId(redirectUri)}&redirect_uri=${redirectUri}&scope=repo`;
-}
+  const { clientId } = getGithubCredentials(redirectUri);
+  return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
+};
 
 export const getGithubToken = async (code, redirectUri) => {
-  return axios.post(
-    `https://github.com/login/oauth/access_token`,
-    {
-      client_id: getGithubClientId(redirectUri),
-      client_secret: getGithubClientSecret(redirectUri),
-      redirect_uri: redirectUri,
-      code
-    },
-    {
-      headers: {
-        Accept: 'application/json'
-      }
-    }).then(res => res.data).then(data => {
-      if (data.error) throw new AppError(401, 'Invalid Authentication Information');
-      console.log(data);
-      return {
-        token: data.access_token
-      }
-    }).catch(() => { throw new AppError(401, 'Invalid Authentication Information'); });
-}
+  const { clientId, clientSecret } = getGithubCredentials(redirectUri);
+  try {
+    const { data } = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      { client_id: clientId, client_secret: clientSecret, redirect_uri: redirectUri, code },
+      { headers: { Accept: 'application/json' } }
+    );
+    if (data.error) throw new Error('auth_failed');
+    console.log(data);
+    return { token: data.access_token };
+  } catch {
+    throw new AppError(401, 'Invalid Authentication Information');
+  }
+};

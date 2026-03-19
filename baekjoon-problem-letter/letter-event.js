@@ -34,7 +34,7 @@ export const run = async (event) => {
                         userId: userId
                     }, newProblems.map(problem => ({
                         ...problem,
-                        tierTitle: tierWordMap[[problem.tier]]
+                        tierTitle: tierWordMap[problem.tier]
                     })))
                 } catch (error) {
                     console.error(`Error sending letter subscription ${id}:`, error);

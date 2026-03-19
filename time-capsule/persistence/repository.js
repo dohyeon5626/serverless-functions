@@ -70,15 +70,13 @@ export const getSubscriptionCounts = async () => {
     };
 
     try {
-        const openResult = await docClient.send(new QueryCommand(openParams));
-        const waitResult = await docClient.send(new QueryCommand(waitParams));
-
-        const openCount = openResult.Count;
-        const waitCount = waitResult.Count;
-
+        const [openResult, waitResult] = await Promise.all([
+            docClient.send(new QueryCommand(openParams)),
+            docClient.send(new QueryCommand(waitParams)),
+        ]);
         return {
-            sentCount: openCount,
-            waitingCount: waitCount,
+            sentCount: openResult.Count,
+            waitingCount: waitResult.Count,
         };
     } catch (error) {
         console.log("Error querying subscription counts:", error);

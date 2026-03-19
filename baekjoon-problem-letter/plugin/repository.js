@@ -38,7 +38,7 @@ export const saveSubscription = async (subscriptionData) => {
 
 export const deleteSubscription = async (email) => {
     const deleteParams = {
-        TableName: process.env.TABLE,
+        TableName: TABLE,
         Key: {
             id: email,
         },

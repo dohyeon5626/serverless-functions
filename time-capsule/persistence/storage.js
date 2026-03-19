@@ -33,6 +33,6 @@ export const deleteImageFromS3 = async (fileUrl) => {
         await s3Client.send(new DeleteObjectCommand(deleteParams));
     } catch (error) {
         console.log("S3 삭제 오류:", error);
-        throw new Error(`S3에서 객체 ${key}를 삭제하는 데 실패했습니다.`);
+        throw new Error(`S3에서 객체 ${fileUrl}를 삭제하는 데 실패했습니다.`);
     }
 };

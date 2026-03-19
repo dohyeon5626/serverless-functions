@@ -5,11 +5,10 @@ import AppError from '../routes/exception.js';
 
 export const createSubscription = async (capsuleData, imageFile) => {
     const id = nanoid();
-    var imgUrl = null;
-    if (imageFile) {
-        imgUrl = await uploadImageToS3(imageFile.buffer, 'time-capusle-' + id + '.' + imageFile.mimetype.split('/')[1], imageFile.mimetype)
-    }
-    return await saveSubscription(id, capsuleData, imgUrl);
+    const imgUrl = imageFile
+        ? await uploadImageToS3(imageFile.buffer, `time-capusle-${id}.${imageFile.mimetype.split('/')[1]}`, imageFile.mimetype)
+        : null;
+    return saveSubscription(id, capsuleData, imgUrl);
 }
 
 export const getSubscriptionById = async (subscriptionId) => {
