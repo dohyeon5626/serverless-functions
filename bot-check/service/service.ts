@@ -1,18 +1,14 @@
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
+import { SchedulerClient, CreateScheduleCommand, DeleteScheduleCommand } from '@aws-sdk/client-scheduler';
 import { saveAction, getAction, deleteAction } from '../plugin/repository';
+import { encryptToken, decryptToken } from '../util/crypto';
+import AppError from '../routes/exception';
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY as string;
-const ALGORITHM = 'aes-256-gcm';
+const SCHEDULER_ROLE_ARN = process.env.SCHEDULER_ROLE_ARN as string;
+const EXPIRED_EVENT_FUNCTION_ARN = process.env.EXPIRED_EVENT_FUNCTION_ARN as string;
 
-const encryptToken = (token: string): string => {
-  const iv = randomBytes(12);
-  const cipher = createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-  const encrypted = Buffer.concat([cipher.update(token, 'utf8'), cipher.final()]);
-  const authTag = cipher.getAuthTag();
-  return [iv.toString('hex'), authTag.toString('hex'), encrypted.toString('hex')].join(':');
-};
+const schedulerClient = new SchedulerClient({});
 
 export interface CreateActionInput {
   token: string;
@@ -26,11 +22,28 @@ export interface CreateActionInput {
 
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET as string;
 
-const decryptToken = (encrypted: string): string => {
-  const [ivHex, authTagHex, encryptedHex] = encrypted.split(':');
-  const decipher = createDecipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), Buffer.from(ivHex, 'hex'));
-  decipher.setAuthTag(Buffer.from(authTagHex, 'hex'));
-  return decipher.update(encryptedHex, 'hex', 'utf8') + decipher.final('utf8');
+const createSchedule = async (id: string, ttl: number): Promise<void> => {
+  const scheduleTime = new Date(ttl * 1000).toISOString().slice(0, 19);
+  await schedulerClient.send(new CreateScheduleCommand({
+    Name: `bot-check-${id}`,
+    ScheduleExpression: `at(${scheduleTime})`,
+    ScheduleExpressionTimezone: 'UTC',
+    Target: {
+      Arn: EXPIRED_EVENT_FUNCTION_ARN,
+      RoleArn: SCHEDULER_ROLE_ARN,
+      Input: JSON.stringify({ id }),
+    },
+    FlexibleTimeWindow: { Mode: 'OFF' },
+    ActionAfterCompletion: 'DELETE',
+  }));
+};
+
+const deleteSchedule = async (id: string): Promise<void> => {
+  try {
+    await schedulerClient.send(new DeleteScheduleCommand({ Name: `bot-check-${id}` }));
+  } catch (e: any) {
+    if (e.name !== 'ResourceNotFoundException') throw e;
+  }
 };
 
 const verifyTurnstile = async (turnstileToken: string): Promise<boolean> => {
@@ -43,10 +56,10 @@ const verifyTurnstile = async (turnstileToken: string): Promise<boolean> => {
 
 export const verifyAction = async (id: string, turnstileToken: string): Promise<void> => {
   const record = await getAction(id);
-  if (!record) throw new Error('Not Found');
+  if (!record) throw new AppError(409, 'Not Found');
 
   const isValid = await verifyTurnstile(turnstileToken);
-  if (!isValid) throw new Error('Turnstile verification failed');
+  if (!isValid) throw new AppError(401, 'Turnstile verification failed');
 
   const pat = decryptToken(record.token);
   await axios.post(
@@ -57,6 +70,7 @@ export const verifyAction = async (id: string, turnstileToken: string): Promise<
         ...(record.issueNumber !== undefined && { issueNumber: record.issueNumber }),
         ...(record.prNumber !== undefined && { prNumber: record.prNumber }),
         commentId: record.commentId,
+        isSuccess: true
       },
     },
     {
@@ -67,7 +81,7 @@ export const verifyAction = async (id: string, turnstileToken: string): Promise<
     },
   );
 
-  await deleteAction(id);
+  await Promise.all([deleteAction(id), deleteSchedule(id)]);
 };
 
 export const createAction = async (input: CreateActionInput): Promise<string> => {
@@ -85,6 +99,8 @@ export const createAction = async (input: CreateActionInput): Promise<string> =>
     commentId: input.commentId,
     ttl,
   });
+
+  await createSchedule(id, ttl);
 
   return id;
 };
