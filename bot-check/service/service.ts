@@ -18,21 +18,24 @@ export interface CreateActionInput {
   verificationTimeout: number;
   owner: string;
   repo: string;
+  issueNumber?: number;
+  prNumber?: number;
+  commentId: number;
 }
 
 export const createAction = async (input: CreateActionInput): Promise<string> => {
   const id = nanoid();
   const encryptedToken = encryptToken(input.token);
-
   const ttl = Math.floor(Date.now() / 1000) + input.verificationTimeout * 60;
 
   await saveAction({
     id,
     token: encryptedToken,
-    verificationTimeout: input.verificationTimeout,
     owner: input.owner,
     repo: input.repo,
-    createdAt: Date.now(),
+    ...(input.issueNumber !== undefined && { issueNumber: input.issueNumber }),
+    ...(input.prNumber !== undefined && { prNumber: input.prNumber }),
+    commentId: input.commentId,
     ttl,
   });
 

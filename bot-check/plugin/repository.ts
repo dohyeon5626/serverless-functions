@@ -9,10 +9,11 @@ const docClient = DynamoDBDocumentClient.from(client);
 export interface ActionRecord {
   id: string;
   token: string;
-  verificationTimeout: number;
   owner: string;
   repo: string;
-  createdAt: number;
+  issueNumber?: number;
+  prNumber?: number;
+  commentId: number;
   ttl: number;
 }
 

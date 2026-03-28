@@ -6,17 +6,24 @@ import { createAction } from '../service/service';
 const router = Router();
 
 router.post('/verification', asyncHandler(async (req, res) => {
-  const { token, verificationTimeout, owner, repo } = req.body as {
+  const { token, verificationTimeout, owner, repo, issueNumber, prNumber, commentId } = req.body as {
     token?: string;
     verificationTimeout?: number;
     owner?: string;
     repo?: string;
+    issueNumber?: number;
+    prNumber?: number;
+    commentId: number;
   };
 
   if (!token || verificationTimeout === undefined || !owner || !repo) throw new AppError(400, 'Bad Request');
   if (verificationTimeout < 5 || verificationTimeout > 60) throw new AppError(400, 'verificationTimeout must be between 5 and 60');
 
-  const id = await createAction({ token, verificationTimeout, owner, repo });
+  const hasIssue = issueNumber !== undefined;
+  const hasPr = prNumber !== undefined;
+  if (hasIssue === hasPr) throw new AppError(400, 'Exactly one of issueNumber or prNumber must be provided');
+
+  const id = await createAction({ token, verificationTimeout, owner, repo, issueNumber, prNumber, commentId });
   res.status(201).json({ id });
 }));
 
