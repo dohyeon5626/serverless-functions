@@ -32,9 +32,22 @@
 - 티어 업데이트 관련 eventBridge // 요청 수 제한을 벗어나기 위해서 여러번에 걸쳐서 배치를 진행함
 ```
 
+### bot-check
+CloudFlare의 turnstile토큰 검증 및 인증 정보 관리를 위한 기능을 운영 중입니다.
+> [Bot Check Action](https://github.com/dohyeon5626/bot-check-action), [Bot Check Page](https://github.com/dohyeon5626/bot-check-page)
+```
+1. 인증 생성 Api
+- POST /verification
+
+2. 인증 확인 Api
+- POST /verify
+
+3. 인증 만료 작업
+- 인증 만료 관련 eventBridge
+```
 
 ### github-html-preview
-깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 운영중입니다.
+깃허브 파일을 가져오기 위한 프록시와 Oauth를 위한 기능을 운영 중입니다.
 > [Github Html Preview Extension](https://github.com/dohyeon5626/github-html-preview-extension), [Github Html Preview Page](https://github.com/dohyeon5626/github-html-preview-page)
 ```
 1. 깃허브 Content를 Header없이 Url로 가져오기 위한 Proxy Api
