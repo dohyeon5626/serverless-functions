@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import { Router } from 'express';
 import AppError from './exception';
-import { createAction } from '../service/service';
+import { createAction, verifyAction } from '../service/service';
 
 const router = Router();
 
@@ -25,6 +25,18 @@ router.post('/verification', asyncHandler(async (req, res) => {
 
   const id = await createAction({ token, verificationTimeout, owner, repo, issueNumber, prNumber, commentId });
   res.status(201).json({ id });
+}));
+
+router.post('/verify', asyncHandler(async (req, res) => {
+  const { id, turnstileToken } = req.body as {
+    id?: string;
+    turnstileToken?: string;
+  };
+
+  if (!id || !turnstileToken) throw new AppError(400, 'Bad Request');
+
+  await verifyAction(id, turnstileToken);
+  res.status(200).json({});
 }));
 
 export default router;

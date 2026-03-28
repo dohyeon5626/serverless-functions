@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 
 const TABLE = process.env.TABLE as string;
 
@@ -21,5 +21,20 @@ export const saveAction = async (record: ActionRecord): Promise<void> => {
   await docClient.send(new PutCommand({
     TableName: TABLE,
     Item: record,
+  }));
+};
+
+export const getAction = async (id: string): Promise<ActionRecord | null> => {
+  const result = await docClient.send(new GetCommand({
+    TableName: TABLE,
+    Key: { id },
+  }));
+  return (result.Item as ActionRecord) ?? null;
+};
+
+export const deleteAction = async (id: string): Promise<void> => {
+  await docClient.send(new DeleteCommand({
+    TableName: TABLE,
+    Key: { id },
   }));
 };
