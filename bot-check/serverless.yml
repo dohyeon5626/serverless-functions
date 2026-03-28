@@ -1,0 +1,76 @@
+org: dohyeon5626
+app: bot-check
+service: bot-check
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+          Resource:
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+        - Effect: "Allow"
+          Action:
+            - "scheduler:CreateSchedule"
+            - "scheduler:DeleteSchedule"
+          Resource: "*"
+        - Effect: "Allow"
+          Action:
+            - "iam:PassRole"
+          Resource: !GetAtt SchedulerInvokeRole.Arn
+
+functions:
+
+  api:
+    handler: app.application
+    environment:
+      SCHEDULER_ROLE_ARN: !GetAtt SchedulerInvokeRole.Arn
+      EXPIRED_EVENT_FUNCTION_ARN: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${sls:stage}-expired-event"
+    events:
+      - httpApi: "*"
+
+  expired-event:
+    handler: expired-event.expiredEventHandler
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  exclude:
+    - .env
+
+resources:
+  Resources:
+    SchedulerInvokeRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: scheduler.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: InvokeLambda
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: lambda:InvokeFunction
+                  Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${sls:stage}-expired-event"
