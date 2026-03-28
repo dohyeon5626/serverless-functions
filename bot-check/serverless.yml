@@ -1,0 +1,38 @@
+org: dohyeon5626
+app: bot-check
+service: bot-check
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+          Resource:
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:TABLE}"
+
+functions:
+
+  api:
+    handler: app.application
+    events:
+      - httpApi: "*"
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: node
+    target: node22
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  exclude:
+    - .env
