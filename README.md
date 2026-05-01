@@ -13,8 +13,8 @@
 
 ---
 
-### baekjoon-problem-letter
-문제 추천 구독 정보 저장 및 이메일 발송, 배치를 통한 문제 추천 기능을 운영 중입니다.
+### baekjoon-problem-letter (archive)
+문제 추천 구독 정보 저장 및 이메일 발송, 배치를 통한 문제 추천 기능이 있습니다, 현재는 백준 서비스 종료로 운영되지 않습니다.
 > [Baekjoon Problem Letter](https://github.com/dohyeon5626/baekjoon-problem-letter)
 ```
 1. 구독 생성 Api
