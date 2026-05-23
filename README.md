@@ -1,4 +1,4 @@
-# Serverless Functions<img src="https://github.com/user-attachments/assets/38618fea-ad8a-461c-b618-a485f844e35d" align=left width=100>
+# Serverless Functions
 
 ![GitHub License](https://img.shields.io/github/license/dohyeon5626/serverless-functions?style=flat&color=green) ![Api Gateway](https://img.shields.io/badge/api_gateway-running-blue) ![Event Bridge](https://img.shields.io/badge/event_bridge-running-blue)
 <br/><br/>
